@@ -9,7 +9,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private AuthService authService;
+    private final AuthService authService;
+
+    public WebSecurityConfig(AuthService authService){
+        this.authService = authService;
+    }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth){

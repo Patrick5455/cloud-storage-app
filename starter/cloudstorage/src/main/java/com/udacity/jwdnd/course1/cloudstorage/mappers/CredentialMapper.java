@@ -1,4 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.mappers;
 
-public class CredentialMapper {
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface CredentialMapper {
 }
