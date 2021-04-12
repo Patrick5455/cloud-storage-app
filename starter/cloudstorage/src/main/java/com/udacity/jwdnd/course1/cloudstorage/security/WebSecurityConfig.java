@@ -21,10 +21,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity.authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/session/login").permitAll()
                 .antMatchers("/home").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/signup", "/css/**", "/js/**").permitAll()
+                .antMatchers("/session/signup", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated();
 
         httpSecurity.csrf().disable();
