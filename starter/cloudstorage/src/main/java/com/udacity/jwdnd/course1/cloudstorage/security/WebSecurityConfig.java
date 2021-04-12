@@ -9,7 +9,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private AuthService authService;
+    private final AuthService authService;
+
+    public WebSecurityConfig(AuthService authService){
+        this.authService = authService;
+    }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth){
@@ -21,10 +25,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity.authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/session/login").permitAll()
                 .antMatchers("/home").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/signup", "/css/**", "/js/**").permitAll()
+                .antMatchers("/session/signup", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated();
 
         httpSecurity.csrf().disable();
