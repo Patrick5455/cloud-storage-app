@@ -27,6 +27,8 @@ public class AuthService implements AuthenticationProvider {
        String username = authentication.getName();
        String password = authentication.getCredentials().toString();
 
+       //TODO: get user from db to get user password and salt for authentication
+
        String hashedPassword = hashService.getHashedValue(password, "salt");
 
        if (hashedPassword.equals(password)){
