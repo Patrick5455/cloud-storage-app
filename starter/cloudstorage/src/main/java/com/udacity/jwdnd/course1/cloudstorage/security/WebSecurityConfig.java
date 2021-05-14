@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.security;
 
-import org.springframework.context.annotation.Bean;
+import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,9 +12,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthService authService;
 
+    @Autowired
     public WebSecurityConfig(AuthService authService){
         this.authService = authService;
     }
+
 
     @Override
     public void configure(AuthenticationManagerBuilder auth){
@@ -24,23 +27,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
 
+//        httpSecurity.authorizeRequests()
+//                .antMatchers("/").permitAll();
+
         httpSecurity.authorizeRequests()
-                .antMatchers("/session/login").permitAll()
-                .antMatchers("/home").permitAll()
+                .antMatchers("/sessions/signup").permitAll()
+                .antMatchers("/sessions/process_signup").permitAll()
+                .antMatchers("/css/**", "/js/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/session/signup", "/css/**", "/js/**").permitAll()
+                .antMatchers("/console/**").permitAll()
+                .antMatchers("/home").permitAll()
                 .anyRequest().authenticated();
+
 
         httpSecurity.csrf().disable();
         httpSecurity.headers().frameOptions().disable();
 
         httpSecurity.formLogin()
-                .loginPage("/login")
+                .loginPage("/sessions/login")
+                .loginProcessingUrl("/sessions/perform_login")
+                .defaultSuccessUrl("/home", true)
                 .permitAll();
 
-        httpSecurity.formLogin()
-                .defaultSuccessUrl("/home", true);
-
+        httpSecurity.logout()
+                .logoutUrl("/sessions/logout")
+                .logoutSuccessUrl("/sessions.login")
+                .permitAll();
 
     }
 
