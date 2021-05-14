@@ -6,6 +6,8 @@ import com.udacity.jwdnd.course1.cloudstorage.models.User;
 import com.udacity.jwdnd.course1.cloudstorage.models.requests.SignupRequest;
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.HashService;
 import com.udacity.jwdnd.course1.cloudstorage.validation.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.util.Base64;
 @Service
 public class UserService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     UserMapper userMapper;
     HashService hashService;
 
@@ -22,11 +26,14 @@ public class UserService {
     @Autowired
     public UserService(UserMapper userMapper, HashService hashService){
         this.userMapper = userMapper;
+        this.hashService = hashService;
     }
 
     public int createUser(SignupRequest request) throws SignUpException {
 
         Validator.validateSignUpRequest(request);
+
+        logger.info("user signup details {}", request);
 
         SecureRandom random = new SecureRandom();
         byte[] key = new byte[16];
@@ -35,6 +42,7 @@ public class UserService {
         String hashedPassword = hashService
                 .getHashedValue(request.getPassword(), salt);
 
+        logger.info("hashed password {}", hashedPassword);
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());

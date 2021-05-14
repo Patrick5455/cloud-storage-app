@@ -27,21 +27,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.authorizeRequests()
-                .antMatchers("/").permitAll();
-
 //        httpSecurity.authorizeRequests()
-//                .antMatchers("/sessions/signup").permitAll()
-//                .antMatchers("/css/**", "/js/**").permitAll()
-//                .anyRequest().authenticated();
-//
-//
-//        httpSecurity.formLogin()
-//                .loginPage("/sessions/login")
-//                .loginProcessingUrl("/sessions/perform_login")
-//                .defaultSuccessUrl("/", true)
-//                .permitAll();
-//
+//                .antMatchers("/").permitAll();
+
+        httpSecurity.authorizeRequests()
+                .antMatchers("/sessions/signup").permitAll()
+                .antMatchers("/sessions/process_signup").permitAll()
+                .antMatchers("/css/**", "/js/**").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/console/**").permitAll()
+                .antMatchers("/home").permitAll()
+                .anyRequest().authenticated();
+
+
+        httpSecurity.csrf().disable();
+        httpSecurity.headers().frameOptions().disable();
+
+        httpSecurity.formLogin()
+                .loginPage("/sessions/login")
+                .loginProcessingUrl("/sessions/perform_login")
+                .defaultSuccessUrl("/home", true)
+                .permitAll();
+
+        httpSecurity.logout()
+                .logoutUrl("/sessions/logout")
+                .logoutSuccessUrl("/sessions.login")
+                .permitAll();
 
     }
 
