@@ -24,7 +24,8 @@ public class SessionController {
 
 
     @GetMapping("/signup")
-    public String signUp(User user, Model model){
+    public String signUp(@ModelAttribute("user")User user){
+
         return "signup";
     }
 

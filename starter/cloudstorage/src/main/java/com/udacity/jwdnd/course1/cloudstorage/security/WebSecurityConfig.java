@@ -14,9 +14,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public WebSecurityConfig(AuthService authService){
-
         this.authService = authService;
     }
+
 
     @Override
     public void configure(AuthenticationManagerBuilder auth){
@@ -28,17 +28,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity.authorizeRequests()
-                .antMatchers("/sessions/signup").permitAll()
-                .antMatchers("/css/**", "/js/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/").permitAll();
 
-
-        httpSecurity.formLogin()
-                .loginPage("/sessions/login")
-                .loginProcessingUrl("/sessions/perform_login")
-                .defaultSuccessUrl("/", true)
-                .permitAll();
-
+//        httpSecurity.authorizeRequests()
+//                .antMatchers("/sessions/signup").permitAll()
+//                .antMatchers("/css/**", "/js/**").permitAll()
+//                .anyRequest().authenticated();
+//
+//
+//        httpSecurity.formLogin()
+//                .loginPage("/sessions/login")
+//                .loginProcessingUrl("/sessions/perform_login")
+//                .defaultSuccessUrl("/", true)
+//                .permitAll();
+//
 
     }
 
