@@ -31,7 +31,7 @@ public class UserService{
 
     public int createUser(SignupRequest request) throws SignUpException {
 
-        Validator.validateSignUpRequest(request);
+//        Validator.validateSignUpRequest(request);
 
         if (userNameExists(request.getUsername())){
             throw  new SignUpException("username already exists. Try another username ");

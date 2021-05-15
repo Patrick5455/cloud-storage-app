@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,17 +40,25 @@ public class AuthService implements AuthenticationProvider {
        try {
             user = userService.getUserByUserName(username);
        } catch (ResourceNotFoundException e){
+           logger.error("error confirming user exists: {}", e.getMessage());
            return null;
        }
        String hashedPassword = hashService.getHashedValue(password, user.getSalt());
        if (hashedPassword.equals(user.getPassword())){
             return new UsernamePasswordAuthenticationToken(username, hashedPassword, new ArrayList<>());
         }
-       return null;
+        logger.error("auth error: user authentication failed");
+        return null;
     }
 
     @Override
     public boolean supports(Class<?> auth) {
         return auth.equals(UsernamePasswordAuthenticationToken.class);
+    }
+
+    public static String getPrincipal(){
+        Authentication authenticatedUser = SecurityContextHolder.getContext().getAuthentication();
+        logger.info("authenticated user {}", authenticatedUser.getPrincipal().toString());
+        return authenticatedUser.getName();
     }
 }

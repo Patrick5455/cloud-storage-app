@@ -11,9 +11,9 @@
     <body class="p-3 mb-2 bg-light text-black">
         <div class="container justify-content-center w-25 p-3" style="background-color: #eeeeee; margin-top: 5em;">
             <h1 class="display-5">Login</h1>
-            <form  action="#" th:action="@{/sessions/perform_login}" method="POST" th:object="${login}">
-                <div >
-                    <span class="alert alert-danger" th:if="${errorMessage != null}" th:text="${errorMessage}"/>
+            <form action="#" th:action="@{/sessions/login}" method="POST" th:object="${login}">
+                <div th:if="${errorMessage != null }" class="alert alert-danger">
+                    <span th:text="${errorMessage}"></span>
                 </div>
 <!--                <div class="alert alert-dark">-->
 <!--                    You have been logged out-->

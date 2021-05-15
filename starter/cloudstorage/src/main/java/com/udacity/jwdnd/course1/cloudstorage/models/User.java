@@ -21,8 +21,7 @@ public class User {
     private String lastName;
     private String salt;
     @Pattern(regexp = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[@#$%^&+=])\\S{8,}\\z",
-            message = "password must be at least 8 characters in size." +
-            "\nAnd contain at least one of digits, upper and lower case, a special character like ^\nNo whitespace is allowed also")
+            message = "password must contain at least one digit, upper and lower case, and a  special character and no space")
     private String password;
     private String hashedPassword;
 

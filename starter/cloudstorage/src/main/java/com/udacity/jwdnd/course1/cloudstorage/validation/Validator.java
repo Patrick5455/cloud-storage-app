@@ -29,8 +29,7 @@ public class Validator {
         String pattern = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[@#$%^&+=])\\S{8,}\\z";
         if (!request.getPassword().matches(pattern)){
             logger.error("password not supported");
-            throw new SignUpException("password must be at least 8 charcters in size." +
-                    "\nAnd contain at least one of digits, upper and lower case, a special character like ^\nNo whitespace is allowed also");
+            throw new SignUpException("password must contain at least one digit, upper and lower case, and a  special character and no space");
         }
 
     }
