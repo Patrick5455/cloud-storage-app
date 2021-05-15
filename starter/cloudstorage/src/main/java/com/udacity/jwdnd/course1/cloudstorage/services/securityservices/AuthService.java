@@ -1,6 +1,8 @@
 package com.udacity.jwdnd.course1.cloudstorage.services.securityservices;
 
 
+import com.udacity.jwdnd.course1.cloudstorage.models.User;
+import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.HashService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -16,10 +18,12 @@ public class AuthService implements AuthenticationProvider {
 
 
     private HashService hashService;
+    private UserService userService;
 
     @Autowired
-    private void setHashService(HashService hashService){
+    private void setHashService(HashService hashService, UserService userService){
         this.hashService = hashService;
+        this.userService = userService;
     }
 
     @Override
@@ -28,10 +32,9 @@ public class AuthService implements AuthenticationProvider {
        String password = authentication.getCredentials().toString();
 
        //TODO: get user from db to get user password and salt for authentication
-
-       String hashedPassword = hashService.getHashedValue(password, "salt");
-
-       if (hashedPassword.equals(password)){
+        User user = userService.getUserByUserName(username);
+       String hashedPassword = hashService.getHashedValue(password, user.getSalt());
+       if (hashedPassword.equals(user.getPassword())){
             return new UsernamePasswordAuthenticationToken(username, hashedPassword, new ArrayList<>());
         }
        return null;

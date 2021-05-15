@@ -1,4 +1,4 @@
-package com.udacity.jwdnd.course1.cloudstorage.security;
+package com.udacity.jwdnd.course1.cloudstorage.securityconfig;
 
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
