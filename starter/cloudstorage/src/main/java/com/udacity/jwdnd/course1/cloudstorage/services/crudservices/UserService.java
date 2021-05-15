@@ -15,13 +15,12 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 @Service
-public class UserService {
+public class UserService{
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     UserMapper userMapper;
     HashService hashService;
-
 
     @Autowired
     public UserService(UserMapper userMapper, HashService hashService){
@@ -33,7 +32,9 @@ public class UserService {
 
         Validator.validateSignUpRequest(request);
 
-        logger.info("user signup details {}", request);
+        if (userNameExists(request.getUsername())){
+            throw  new SignUpException("username already exists. Try another username ");
+        }
 
         SecureRandom random = new SecureRandom();
         byte[] key = new byte[16];
@@ -51,6 +52,20 @@ public class UserService {
         user.setSalt(salt);
         user.setHashedPassword(hashedPassword);
 
-        return userMapper.insertUser(user);
+        int lastInsertedId = userMapper.insertUser(user);
+        logger.info("new user id {}", lastInsertedId);
+        return lastInsertedId;
+    }
+
+
+    public boolean userNameExists(String username){
+       User user =  userMapper.getUserByUserName(username);
+       return user != null;
+    }
+
+    public User getUserByUserName(String username){
+        return userMapper.getUserByUserName(username);
     }
 }
+
+

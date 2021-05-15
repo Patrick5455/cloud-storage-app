@@ -1,4 +1,4 @@
-CREATE SCHEMA superduper;
+CREATE SCHEMA IF NOT EXISTS superduper;
 
 CREATE TABLE IF NOT EXISTS USERS (
   userid INT PRIMARY KEY auto_increment,

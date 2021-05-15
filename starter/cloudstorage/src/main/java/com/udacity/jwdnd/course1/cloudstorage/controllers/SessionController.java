@@ -39,13 +39,14 @@ public class SessionController {
     }
 
     @PostMapping("/process_signup")
-    public String processSignUp(@ModelAttribute("signup") SignupRequest signupRequest){
+    public String processSignUp(Model model, @ModelAttribute("signup") SignupRequest signupRequest){
         try{
             userService.createUser(signupRequest);
         }
         catch (SignUpException exception){
             logger.error("signup error {}",exception.getMessage());
-            return "error";
+            model.addAttribute("errorMessage", exception.getMessage());
+            return "signup";
         }
         logger.info("signup successful");
         return "signup-success";
