@@ -2,6 +2,7 @@ package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
 import com.udacity.jwdnd.course1.cloudstorage.exceptions.SignUpException;
 import com.udacity.jwdnd.course1.cloudstorage.models.User;
+import com.udacity.jwdnd.course1.cloudstorage.models.requests.LoginRequest;
 import com.udacity.jwdnd.course1.cloudstorage.models.requests.SignupRequest;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
@@ -54,10 +55,22 @@ public class SessionController {
 
 
     @GetMapping("/login")
-    public String getLogin(@ModelAttribute String username, String password){
-
+    public String getLogin(@ModelAttribute("login")LoginRequest loginRequest){
         return "login";
     }
+
+//    @PostMapping("/perform_login")
+//    public String processLogin(Model model, Authentication authentication){
+//        logger.info("processing login");
+//        logger.info("auth details\nusername:{}\npassword{}", authentication.getName(), authentication.getCredentials().toString());
+//        Authentication authenticated = authService.authenticate(authentication);
+//        if (authenticated == null){
+//            model.addAttribute("errorMessage", "Invalid username or password\n");
+//            return "login";
+//        }
+//        logger.info("login successful");
+//        return "home";
+//    }
 
 
     @PostMapping("/perform_login")

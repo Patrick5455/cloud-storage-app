@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.services.crudservices;
 
+import com.udacity.jwdnd.course1.cloudstorage.exceptions.ResourceNotFoundException;
 import com.udacity.jwdnd.course1.cloudstorage.exceptions.SignUpException;
 import com.udacity.jwdnd.course1.cloudstorage.mappers.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.models.User;
@@ -43,29 +44,28 @@ public class UserService{
         String hashedPassword = hashService
                 .getHashedValue(request.getPassword(), salt);
 
-        logger.info("hashed password {}", hashedPassword);
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
+        user.setPassword(hashedPassword);
         user.setSalt(salt);
-        user.setHashedPassword(hashedPassword);
 
         int lastInsertedId = userMapper.insertUser(user);
         logger.info("new user id {}", lastInsertedId);
         return lastInsertedId;
     }
 
-
     public boolean userNameExists(String username){
        User user =  userMapper.getUserByUserName(username);
        return user != null;
     }
 
-    public User getUserByUserName(String username){
-        return userMapper.getUserByUserName(username);
+    public User getUserByUserName(String username) throws ResourceNotFoundException {
+        User user =  userMapper.getUserByUserName(username);
+        if (user == null){
+            throw  new ResourceNotFoundException("no user with that username");
+        }
+        return user;
     }
 }
-
-

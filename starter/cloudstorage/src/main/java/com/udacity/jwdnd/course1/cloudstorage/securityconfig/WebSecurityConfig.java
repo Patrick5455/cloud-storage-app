@@ -19,7 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Override
-    public void configure(AuthenticationManagerBuilder auth){
+    public void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authService);
     }
 
@@ -35,10 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/sessions/process_signup").permitAll()
                 .antMatchers("/css/**", "/js/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/console/**").permitAll()
-                .antMatchers("/home").permitAll()
                 .anyRequest().authenticated();
-
 
         httpSecurity.csrf().disable();
         httpSecurity.headers().frameOptions().disable();
@@ -46,14 +43,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.formLogin()
                 .loginPage("/sessions/login")
                 .loginProcessingUrl("/sessions/perform_login")
-                .defaultSuccessUrl("/home", true)
+//                .defaultSuccessUrl("/home", true)
                 .permitAll();
 
         httpSecurity.logout()
                 .logoutUrl("/sessions/logout")
-                .logoutSuccessUrl("/sessions.login")
+                .logoutSuccessUrl("/sessions/login")
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll();
-
     }
 
 
