@@ -26,7 +26,6 @@ public class NoteController {
     private final NoteService noteService;
     private final UserService userService;
 
-
     @Autowired
     public NoteController(AuthService authService, NoteService noteService, UserService userService) {
         this.authService = authService;
@@ -42,7 +41,6 @@ public class NoteController {
             model.addAttribute("errorMessage","please provide a title and/or description");
             return "result";
         }
-
         try {
             int userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
             if (note.getNoteId() > 0) {
@@ -58,7 +56,6 @@ public class NoteController {
         return "result";
     }
 
-
     @RequestMapping(value = "/delete-note", method = {RequestMethod.GET, RequestMethod.DELETE})
     public String deleteNote(@Param("noteId") long noteId, Model model){
         try {
@@ -72,5 +69,7 @@ public class NoteController {
         model.addAttribute("errorMessage",null);
         return "result";
     }
+
+
 
 }
