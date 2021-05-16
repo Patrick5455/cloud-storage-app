@@ -5,14 +5,14 @@ import com.udacity.jwdnd.course1.cloudstorage.models.Note;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -58,5 +58,19 @@ public class NoteController {
         return "result";
     }
 
+
+    @RequestMapping(value = "/delete-note", method = {RequestMethod.GET, RequestMethod.DELETE})
+    public String deleteNote(@Param("noteId") long noteId, Model model){
+        try {
+            int userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
+            noteService.deleteANote(userId, noteId);
+        } catch (ResourceNotFoundException e){
+            logger.error("error while deleting note {}", e.getMessage());
+            model.addAttribute("errorMessage", "note could not be deleted, please try again");
+            return "result";
+        }
+        model.addAttribute("errorMessage",null);
+        return "result";
+    }
 
 }
