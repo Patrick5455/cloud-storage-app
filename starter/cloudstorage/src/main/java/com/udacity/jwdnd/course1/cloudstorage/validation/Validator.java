@@ -11,7 +11,6 @@ public class Validator {
 
     public static void validateSignUpRequest(SignupRequest request) throws SignUpException {
 
-
         if (request.getFirstName().isEmpty()){
             logger.error("firstname field cannot be empty");
             throw new SignUpException("firstname field cannot be empty");

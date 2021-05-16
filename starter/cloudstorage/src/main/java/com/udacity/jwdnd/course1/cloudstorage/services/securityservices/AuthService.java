@@ -3,10 +3,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-
 public interface AuthService extends AuthenticationProvider {
 
     @Override
@@ -15,8 +11,8 @@ public interface AuthService extends AuthenticationProvider {
     @Override
      boolean supports(Class<?> auth);
 
-     static String getPrincipal(){
+     default Authentication getLoggedInUser(){
         Authentication authenticatedUser = SecurityContextHolder.getContext().getAuthentication();
-        return authenticatedUser.getName();
+        return authenticatedUser;
     }
 }
