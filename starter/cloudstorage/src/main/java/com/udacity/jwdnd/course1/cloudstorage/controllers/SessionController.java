@@ -1,7 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
 import com.udacity.jwdnd.course1.cloudstorage.exceptions.SignUpException;
-import com.udacity.jwdnd.course1.cloudstorage.models.User;
 import com.udacity.jwdnd.course1.cloudstorage.models.requests.LoginRequest;
 import com.udacity.jwdnd.course1.cloudstorage.models.requests.SignupRequest;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.UserService;
@@ -9,13 +8,20 @@ import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthServ
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.util.Objects;
 
 @Controller()
 @RequestMapping("/sessions")
@@ -39,42 +45,57 @@ public class SessionController {
         return "signup";
     }
 
-    @PostMapping("/process_signup")
-    public String processSignUp(Model model, @ModelAttribute("signup") SignupRequest signupRequest){
+    @PostMapping("/signup")
+    public String processSignUp(Model model,
+                                @Valid @ModelAttribute("signup")
+                                        SignupRequest signupRequest,
+                                BindingResult validator){
+        if(validator.hasErrors()){
+            String passwordError = "password format not correct";
+            logger.error("signup error {}", Objects.requireNonNull(Objects.requireNonNull(validator.getFieldError()).getArguments())[0].toString()
+                    .contains("password") ? passwordError : "check fields are not blank");
+            model.addAttribute("errorMessage", Objects.requireNonNull(Objects.requireNonNull(validator.getFieldError()).getArguments())[0].toString()
+                    .contains("password") ? passwordError : "check fields are not blank");
+            model.addAttribute("message", null);
+            return "signup";
+        }
+
         try{
             userService.createUser(signupRequest);
         }
         catch (SignUpException exception){
             logger.error("signup error {}",exception.getMessage());
             model.addAttribute("errorMessage", exception.getMessage());
+            model.addAttribute("message", null);
             return "signup";
         }
         logger.info("signup successful");
-        return "signup-success";
+        model.addAttribute("message", "You have signed up successfully.");
+        return "signup";
+        //  return"redirect:/login?success=true";
     }
 
 
     @GetMapping("/login")
-    public String getLogin(@ModelAttribute("login")LoginRequest loginRequest){
+    public String getLogin(Model model){
+        model.addAttribute("login", new LoginRequest());
         return "login";
     }
 
-//    @PostMapping("/perform_login")
-//    public String processLogin(Model model, Authentication authentication){
-//        logger.info("processing login");
-//        logger.info("auth details\nusername:{}\npassword{}", authentication.getName(), authentication.getCredentials().toString());
-//        Authentication authenticated = authService.authenticate(authentication);
-//        if (authenticated == null){
-//            model.addAttribute("errorMessage", "Invalid username or password\n");
-//            return "login";
-//        }
-//        logger.info("login successful");
-//        return "home";
-//    }
 
+    @PostMapping("/login")
+    public String loginError(@Valid @ModelAttribute("login")LoginRequest loginRequest, HttpServletRequest request, Model model){
+        HttpSession httpSession = request.getSession(false);
+        String errorMessage = null;
 
-    @PostMapping("/perform_login")
-    public String login(@ModelAttribute User user){
-        return "home";
+        if(httpSession != null){
+            AuthenticationException e = (AuthenticationException) httpSession.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+            if(e != null){
+                errorMessage = e.getMessage();
+            }
+        }
+        model.addAttribute("errorMessage", errorMessage);
+        return "redirect:/login/error=true";
     }
+
 }

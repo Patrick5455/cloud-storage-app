@@ -15,13 +15,13 @@
             </div>
 
             <h1 class="display-5">Sign Up</h1>
-            <form action="#" method="POST" th:action="@{/sessions/process_signup}" th:object="${signup}">
-<!--                <div class="alert alert-dark" >-->
-<!--                    <span th:if="${errorMessage == null}" th:text="You successfully signed up">Hello</span>-->
-<!--                </div>-->
-                <div >
-                    <span class="alert alert-danger" th:if="${errorMessage != null}" th:text="${errorMessage}" />
-<!--                    <span class="alert alert-dark" th:unless="${errorMessage != null}" th:text="You Signed Up Successfully Click on login" />-->
+            <form action="#" method="POST" th:action="@{/sessions/signup}" th:object="${signup}">
+                <div th:if="${message != null}"  class="alert alert-dark" >
+                    <span  th:text="${message}"></span>
+                    <small><a th:href="@{/sesssions/login}">Proceed to login</a></small>
+                </div>
+                <div th:if="${errorMessage != null}"  class="alert alert-danger" >
+                    <span th:text="${errorMessage}"></span>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">

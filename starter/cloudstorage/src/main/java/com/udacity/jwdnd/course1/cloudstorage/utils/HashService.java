@@ -1,4 +1,4 @@
-package com.udacity.jwdnd.course1.cloudstorage.services.securityservices;
+package com.udacity.jwdnd.course1.cloudstorage.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ import java.util.Base64;
 
 @Component
 public class HashService {
-    private Logger logger = LoggerFactory.getLogger(HashService.class);
+    private static final Logger logger = LoggerFactory.getLogger(HashService.class);
 
     public String getHashedValue(String data, String salt) {
         byte[] hashedValue = null;

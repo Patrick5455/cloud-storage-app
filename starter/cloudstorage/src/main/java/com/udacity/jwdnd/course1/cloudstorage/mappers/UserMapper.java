@@ -7,18 +7,19 @@ import org.apache.ibatis.annotations.*;
 public interface UserMapper{
 
 
-    @Insert("INSERT INTO users(username, salt, password, firstname, lastname) " +
+    @Insert("INSERT INTO USERS(username, salt, password, firstname, lastname) " +
             "VALUES(#{username}, #{salt}, #{password}, #{firstName}, #{lastName})")
     @Options(useGeneratedKeys = true, keyProperty = "userId")
     int insertUser(User user);
 
-    @Select("SELECT * FROM users WHERE username=#{username}")
+    @Select("SELECT * FROM USERS WHERE username=#{username}")
     User getUserByUserName(String username);
 
-    @Update("UPDATE users SET firstname=#{firstName}, lastname=#{lastName}, password=#{password}")
+    @Update("UPDATE USERS SET firstname=#{firstName}, lastname=#{lastName}, password=#{password} " +
+            "WHERE userid=#{userId}")
     void updateUser(User user);
 
-    @Delete("DELETE FROM users WHERE username=#{username}")
+    @Delete("DELETE FROM USERS WHERE username=#{username}")
     void deleteUser(String username);
 
 
