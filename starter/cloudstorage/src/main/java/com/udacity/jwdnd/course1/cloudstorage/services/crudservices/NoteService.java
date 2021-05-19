@@ -13,5 +13,5 @@ public interface NoteService {
 
     void updateANote(Note note, long userId) throws Exception;
 
-    void deleteANote(long userid, long noteId) throws ResourceNotFoundException;
+    void deleteANote(long userid, long noteId);
 }

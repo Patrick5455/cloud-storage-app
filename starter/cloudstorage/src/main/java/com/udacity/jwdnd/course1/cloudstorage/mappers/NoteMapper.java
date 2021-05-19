@@ -20,6 +20,7 @@ public interface NoteMapper {
             "notedescription=#{note.noteDescription} WHERE noteid=#{note.noteId} AND userid=#{userId}")
      void updateNote(Note note, long userId);
 
-    @Delete("DELETE FROM NOTES WHERE userid = #{userId} AND id=#{noteId}")
+    @Delete("DELETE FROM NOTES WHERE userid = #{userId} AND noteid=#{noteId}")
      void deleteNote(long userId, long noteId);
 }
+

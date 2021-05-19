@@ -68,10 +68,8 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public void updateANote(Note note, long userId) throws Exception {
-
         try{noteMapper.updateNote(note, userId);}
         catch (Exception e){
-            e.printStackTrace();
             logger.error("an error occurred while updating  the notes {}", e.getMessage());
             throw new Exception("an error occurred while updating the note "+e.getMessage());
         }
@@ -79,7 +77,13 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void deleteANote(long userid, long noteId) throws ResourceNotFoundException {
-
+    @SneakyThrows
+    public void deleteANote(long userid, long noteId) {
+        try{
+            noteMapper.deleteNote(userid, noteId);
+        }catch (Exception e){
+            logger.error("something went wrong while deleting note {}", e.getMessage());
+            throw  new Exception("something went wrong while deleting note" + e.getMessage());
+        }
     }
 }

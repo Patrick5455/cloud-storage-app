@@ -90,8 +90,13 @@
                                         <td>
 <!--                                            <button type="button" class="btn btn-success">Edit</button>-->
 <!--                                            <a class="btn btn-danger">Delete</a>-->
-                                            <button type="button" id="edit" class="btn btn-success" data-toggle="modal" data-target="#noteModal" th:noteId="${note.noteId}" th:noteTitle="${note.noteTitle}" th:noteDescription="${note.noteDescription}" th:onclick="showNoteModal(this.getAttribute('notetitle'), this.getAttribute('notedescription'), this.getAttribute('noteid'))">Edit</button>
-                                            <a th:href="@{/deleteNote(id=${note.noteId})}"  data-body="Are you sure you want to delete this Note??" class="btn btn-danger" id="delete">Delete</a>
+                                            <button type="button" id="note-edit" class="btn btn-success"
+                                                    data-toggle="modal" data-target="#noteModal" th:noteId="${note.noteId}"
+                                                    th:noteTitle="${note.noteTitle}" th:noteDescription="${note.noteDescription}"
+                                                    th:onclick="showNoteModal(this.getAttribute('notetitle'),
+                                                     this.getAttribute('notedescription'), this.getAttribute('noteid'))">Edit</button>
+
+                                            <a th:href="@{/notes(noteId=${note.noteId})}"   class="btn btn-danger" id="delete">Delete</a>
                                         </td>
                                         <th scope="row" th:text="${note.noteTitle}"></th>
                                         <td scope="row" th:text="${note.noteDescription}"></td>
@@ -111,7 +116,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body" >
-                                        <form action="#"  method="POST" th:action="@{/create-note}" th:object="${note}">
+                                        <form action="#"  method="POST" th:action="@{/notes}" th:object="${note}">
                                             <input type="hidden" th:field="*{noteId}" th:value="${note.noteId}"  name="noteId" id="note-id">
 
                                             <div class="form-group">
@@ -154,12 +159,18 @@
                                 </tr>
                                 <tr th:unless="${privates.isEmpty()}" th:each="item:${privates}">
                                     <td>
-                                        <button  type="button" class="btn btn-success">Edit</button>
-                                        <a class="btn btn-danger">Delete</a>
+                                        <button  type="button" id="private-edit" class="btn btn-success"
+                                        data-toggle="modal" data-target="#credentialModal" th:credentialId="${item.credentialId}"
+                                        th:url="${item.url}" th:username="${item.username}" th:password="${item.password}"
+
+                                        th:onclick="showCredentialModal(this.getAttribute('credentialid'), this.getAttribute('url'),
+                                        this.getAttribute('username'), this.getAttribute('password'))">Edit</button>
+
+                                        <a th:href="@{/credentials(credentialId=${item.credentialId})}" class="btn btn-danger">Delete</a>
                                     </td>
-                                    <th th:text="${item.getUrl()}" scope="row"></th>
-                                    <td scope="row" th:text="${item.getUsername()}"></td>
-                                    <td scope="row" th:text="${item.getPassword()}"></td>
+                                    <th scope="row" th:text="${item.url}" ></th>
+                                    <td scope="row" th:text="${item.username}"></td>
+                                    <td scope="row" th:text="${item.password}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -175,7 +186,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST" th:action="@{/store-private}" th:object="${private}">
+                                        <form action="#" method="POST" th:action="@{/credentials}" th:object="${private}">
                                             <input type="hidden" th:field="*{credentialId}" th:value="${private.credentialId}" name="credentialId" id="credential-id">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">URL</label>
