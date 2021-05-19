@@ -23,4 +23,5 @@ public class Credential {
     @NotBlank(message = "please provide a password, password cannot be blank")
     private String password;
     private int userId;
+    private String rawPassword;
 }

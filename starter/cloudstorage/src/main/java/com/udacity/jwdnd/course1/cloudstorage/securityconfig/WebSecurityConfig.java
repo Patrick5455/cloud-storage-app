@@ -70,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                                 AuthenticationException e) throws IOException, ServletException {
 
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                httpServletResponse.sendRedirect("/login?error=true");
+                httpServletResponse.sendRedirect("/login-error?error");
             }
         };
     }

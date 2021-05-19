@@ -16,6 +16,4 @@ public interface CredentialService {
 
     void deleteCredential(int userId, int credentialId);
 
-
-
 }

@@ -11,7 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CredentialServiceImpl implements CredentialService {
@@ -44,15 +47,16 @@ public class CredentialServiceImpl implements CredentialService {
         }
         return lastInsertedId;
     }
-
+    
     @Override
     public List<Credential> getAllUserCredentials(int userId) throws ResourceNotFoundException {
         List<Credential> userCredentials;
-        try{userCredentials = credentialMapper.getAllCredentialsByUserId(userId); }
-        catch (Exception e){
+        try{
+            userCredentials = credentialMapper.getAllCredentialsByUserId(userId)
+            .stream().peek(cred -> cred.setRawPassword(decryptPassword(cred))).collect(Collectors.toList());
+        } catch (Exception e){
             logger.error("error occurred while fetching user credentials from DB -> message: {}", e.getMessage());
-            throw new ResourceNotFoundException("user credentials could not be fetched from the DB");
-        }
+            throw new ResourceNotFoundException("user credentials could not be fetched from the DB"); }
         return userCredentials;
     }
 
@@ -78,6 +82,14 @@ public class CredentialServiceImpl implements CredentialService {
         catch (Exception e){
             logger.error("an error occurred while deleting  the credentials {}", e.getMessage());
             throw  new Exception("error deleting  credentials "+e.getMessage());};
+    }
+
+    public String encryptPassword( Credential credential){
+        return encryptionService.encryptValue(credential.getPassword(), credential.getKey());
+    };
+
+    public String decryptPassword(Credential credential){
+        return encryptionService.decryptValue(credential.getPassword(),credential.getKey());
     }
 
 

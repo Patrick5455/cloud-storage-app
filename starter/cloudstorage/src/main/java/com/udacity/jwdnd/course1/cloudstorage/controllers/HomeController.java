@@ -58,12 +58,20 @@ public class HomeController {
             return "home";
         }
 
-        model.addAttribute("files", new ArrayList<File>());
-        model.addAttribute("notes", noteService.getAllNotesByUserId(userId));
-        model.addAttribute("privates", credentialService.getAllUserCredentials(userId));
-        model.addAttribute("note", new Note());
-       model.addAttribute("private", new Credential());
-        return "home";
+        try {
+            model.addAttribute("files", new ArrayList<File>());
+            model.addAttribute("notes", noteService.getAllNotesByUserId(userId));
+            model.addAttribute("privates", credentialService.getAllUserCredentials(userId));
+            model.addAttribute("note", new Note());
+            model.addAttribute("private", new Credential());
+            return "home";
+
+        }
+        catch (ResourceNotFoundException e){
+            model.addAttribute("errorMessage", "something unexpected happen please try logging in again");
+            return "redirect:/sessions/login-error";
+        }
+
     }
 
 }
