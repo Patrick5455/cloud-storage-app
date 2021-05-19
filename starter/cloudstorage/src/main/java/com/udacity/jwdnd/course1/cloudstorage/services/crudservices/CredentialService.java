@@ -12,7 +12,7 @@ public interface CredentialService {
 
     List<Credential> getAllUserCredentials(int userId) throws ResourceNotFoundException;
 
-    int updateCredential(Credential credential, int userId) throws IllegalArgumentException;
+    void updateCredential(Credential credential) throws Exception;
 
     void deleteCredential(int userId, int credentialId);
 

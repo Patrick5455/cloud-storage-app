@@ -16,11 +16,11 @@ public interface CredentialMapper {
     @Select("SELECT * FROM CREDENTIALS WHERE userid=#{userId}")
     List<Credential> getAllCredentialsByUserId(int userId);
 
-    @Update("UPDATE CREDENTIALS SET url=#{credential.url}, " +
-            "username=#{credential.username}, key=#{credential.key}, " +
-            "password=#{credential.password} " +
-            "WHERE credentialid=#{credential.credentialId} AND userid=#{credential.userId}")
-    void updateCredential(Credential credential, int userId);
+    @Update("UPDATE CREDENTIALS SET url=#{url}, " +
+            "username=#{username}, key=#{key}, " +
+            "password=#{password} " +
+            "WHERE credentialid=#{credentialId} AND userid=#{userId};")
+    void updateCredential(Credential credential);
 
     @Delete("DELETE FROM CREDENTIALS WHERE userid=#{userId} AND credentialid=#{credentialId}")
     void deleteCredential(int userId, int credentialId);

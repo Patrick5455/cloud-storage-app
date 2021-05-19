@@ -59,8 +59,8 @@ public class HomeController {
         }
 
         model.addAttribute("files", new ArrayList<File>());
-        model.addAttribute("notes", Optional.ofNullable(noteService.getAllNotesByUserId(userId)).orElse(new ArrayList<>()));
-        model.addAttribute("privates", new ArrayList<Credential>());
+        model.addAttribute("notes", noteService.getAllNotesByUserId(userId));
+        model.addAttribute("privates", credentialService.getAllUserCredentials(userId));
         model.addAttribute("note", new Note());
        model.addAttribute("private", new Credential());
         return "home";

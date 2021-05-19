@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Controller
+@RequestMapping("/notes")
 public class NoteController {
 
     private static final Logger logger = LoggerFactory.getLogger(NoteController.class);
@@ -33,7 +34,7 @@ public class NoteController {
         this.userService = userService;
     }
 
-    @PostMapping("/create-note")
+    @PostMapping
     public String createOrUpdateNote(@Valid @ModelAttribute("note")Note note, BindingResult validator, Model model)   {
         logger.info("note description "+ note.toString());
         if(validator.hasErrors()){
@@ -56,10 +57,11 @@ public class NoteController {
         return "result";
     }
 
-    @RequestMapping(value = "/delete-note", method = {RequestMethod.GET, RequestMethod.DELETE})
-    public String deleteNote(@Param("noteId") long noteId, Model model){
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.DELETE})
+    public String deleteNote(@RequestParam("noteId") long noteId, Model model){
         try {
             int userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
+            logger.info("note with id {} successfully deleted", noteId);
             noteService.deleteANote(userId, noteId);
         } catch (ResourceNotFoundException e){
             logger.error("error while deleting note {}", e.getMessage());
@@ -70,6 +72,8 @@ public class NoteController {
         return "result";
     }
 
+    
+    
 
 
 }
