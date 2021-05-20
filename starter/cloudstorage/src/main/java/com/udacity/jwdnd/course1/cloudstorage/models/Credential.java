@@ -20,7 +20,8 @@ public class Credential {
     @NotBlank(message = "please provide a username, username cannot be blank")
     private String username;
     private String key;
-    @NotBlank(message = "please provide a password, password cannot be blank")
     private String password;
     private int userId;
+    @NotBlank(message = "please provide a password, password cannot be blank")
+    private String rawPassword;
 }

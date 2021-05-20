@@ -46,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity.formLogin()
                 .loginPage("/sessions/login")
-//                .failureForwardUrl("/sessions/login-error")
+                .failureForwardUrl("/sessions/login-error")
 //                .failureHandler(authenticationFailureHandler())
                 .defaultSuccessUrl("/", true)
                 .permitAll();
@@ -70,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                                 AuthenticationException e) throws IOException, ServletException {
 
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                System.out.println("handling error");
                 httpServletResponse.sendRedirect("/login?error=true");
             }
         };

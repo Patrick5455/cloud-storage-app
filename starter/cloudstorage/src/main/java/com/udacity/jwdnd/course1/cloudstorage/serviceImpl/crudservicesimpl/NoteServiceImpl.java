@@ -51,8 +51,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     @SneakyThrows
     public List<Note> getAllNotesByUserId(long userId) {
-        List<Note> userNotes;
-
+        List<Note> userNotes = new ArrayList<>();
         try{userNotes = noteMapper.getNotesByUserId(userId).stream()
         .peek(note -> {
             if (note.getNoteDescription().length() > 10) {

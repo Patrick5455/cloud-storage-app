@@ -25,33 +25,29 @@ import java.util.Base64;
 public class CredentialController {
 
     private static final Logger logger = LoggerFactory.getLogger(CredentialController.class);
-
-
     private final CredentialService credentialService;
     private final AuthService authService;
-    private final EncryptionService encryptionService;
     private final UserService userService;
     
 
     @Autowired
-    public CredentialController(CredentialService credentialService, AuthService authService,
-                                EncryptionService encryptionService, UserService userService) {
+    public CredentialController(CredentialService credentialService,
+                                AuthService authService, UserService userService) {
         this.credentialService = credentialService;
         this.authService = authService;
-        this.encryptionService = encryptionService;
         this.userService = userService;
     }
-
 
     @PostMapping
     public String CreateOrUpdateCredential(
             @Valid @ModelAttribute("private") Credential credential,
             BindingResult validator, Model model){
         if(validator.hasErrors()){
-            validator.getFieldErrors().forEach(System.out::println);
             model.addAttribute("errorMessage", "invalid fields: fill all required fields correctly");
+            validator.getFieldErrors().forEach(System.out::println);
             return "result";
         }
+
         int userId;
         try{
          userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
@@ -60,20 +56,14 @@ public class CredentialController {
             model.addAttribute("errorMessage", "something went wrong, please try again later");
             return "result";
         }
-
         if (credential.getCredentialId() < 1){
             try{
-                credential.setUserId(userId);
-                byte[] bytes = new byte[16];
-                SecureRandom random = new SecureRandom();
-                random.nextBytes(bytes);
-                String key = Base64.getEncoder().encodeToString(bytes);
-                credential.setKey(key);
-                credentialService.createCredential(credential);
+                credential.setKey(EncryptionService.getKey());
+               int lastInsertedId =  credentialService.createCredential(credential);
+                logger.info("credential with id {} successfully created", lastInsertedId);
                 model.addAttribute("errorMessage", null);
                 return "result";
-            }
-            catch (Exception e){
+            } catch (Exception e){
                 credential.setUserId(userId);
                 model.addAttribute("errorMessage", "something went wrong, credential could not be created");
                 return "result";
@@ -81,17 +71,12 @@ public class CredentialController {
         }
 
         try{ credential.setUserId(userId);
-            byte[] bytes = new byte[16];
-            SecureRandom random = new SecureRandom();
-            random.nextBytes(bytes);
-            String key = Base64.getEncoder().encodeToString(bytes);
-            credential.setKey(key);
+            credential.setKey(EncryptionService.getKey());
             credentialService.updateCredential(credential);
             logger.info("credential with id {} successfully updated", credential.getCredentialId());
             model.addAttribute("errorMessage", null);
             return "result";
-        }
-        catch (Exception e){
+        } catch (Exception e){
             model.addAttribute("errorMessage", "something went wrong, credential could not be updated");
             return "result";
         }

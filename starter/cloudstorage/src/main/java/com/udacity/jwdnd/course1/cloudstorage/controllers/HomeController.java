@@ -14,15 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/")
@@ -58,12 +53,20 @@ public class HomeController {
             return "home";
         }
 
-        model.addAttribute("files", new ArrayList<File>());
-        model.addAttribute("notes", noteService.getAllNotesByUserId(userId));
-        model.addAttribute("privates", credentialService.getAllUserCredentials(userId));
-        model.addAttribute("note", new Note());
-       model.addAttribute("private", new Credential());
-        return "home";
+        try {
+            model.addAttribute("files", new ArrayList<File>());
+            model.addAttribute("notes", noteService.getAllNotesByUserId(userId));
+            model.addAttribute("privates", credentialService.getAllUserCredentials(userId));
+            model.addAttribute("note", new Note());
+            model.addAttribute("private", new Credential());
+            return "home";
+
+        }
+        catch (ResourceNotFoundException e){
+            model.addAttribute("errorMessage", "something unexpected happen please try logging in again");
+            return "redirect:/sessions/login-error";
+        }
+
     }
 
 }
