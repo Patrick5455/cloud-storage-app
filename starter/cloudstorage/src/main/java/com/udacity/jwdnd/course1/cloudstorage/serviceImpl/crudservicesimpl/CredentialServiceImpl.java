@@ -20,13 +20,11 @@ import java.util.stream.Collectors;
 public class CredentialServiceImpl implements CredentialService {
 
     private static final Logger logger = LoggerFactory.getLogger(CredentialServiceImpl.class);
-    private  final UserService userService;
     private final CredentialMapper credentialMapper;
     private final EncryptionService encryptionService;
 
     @Autowired
-    public CredentialServiceImpl(UserService userService, CredentialMapper credentialMapper, EncryptionService encryptionService) {
-        this.userService = userService;
+    public CredentialServiceImpl(CredentialMapper credentialMapper, EncryptionService encryptionService) {
         this.credentialMapper = credentialMapper;
         this.encryptionService = encryptionService;
     }
@@ -36,9 +34,7 @@ public class CredentialServiceImpl implements CredentialService {
     public int createCredential(Credential credential) throws IllegalArgumentException {
         int lastInsertedId;
         try{
-            String unencryptedPass = credential.getPassword();
-            String encryptedPass = encryptionService.encryptValue(unencryptedPass, credential.getKey());
-            credential.setPassword(encryptedPass);
+            credential.setPassword(encryptPassword(credential));
             lastInsertedId = credentialMapper.insertCredential(credential);
         }
         catch (Exception e){
@@ -50,22 +46,20 @@ public class CredentialServiceImpl implements CredentialService {
     
     @Override
     public List<Credential> getAllUserCredentials(int userId) throws ResourceNotFoundException {
-        List<Credential> userCredentials;
+        List<Credential> userCredentials = new ArrayList<>();
         try{
             userCredentials = credentialMapper.getAllCredentialsByUserId(userId)
             .stream().peek(cred -> cred.setRawPassword(decryptPassword(cred))).collect(Collectors.toList());
+            return  userCredentials;
         } catch (Exception e){
             logger.error("error occurred while fetching user credentials from DB -> message: {}", e.getMessage());
             throw new ResourceNotFoundException("user credentials could not be fetched from the DB"); }
-        return userCredentials;
     }
 
     @Override
     public void updateCredential(Credential credential) throws Exception {
         try {
-            String unencryptedPass = credential.getPassword();
-            String encryptedPass = encryptionService.encryptValue(unencryptedPass, credential.getKey());
-            credential.setPassword(encryptedPass);
+            credential.setPassword(encryptPassword(credential));
             credentialMapper.updateCredential(credential);
         }
         catch (Exception e){
@@ -85,7 +79,7 @@ public class CredentialServiceImpl implements CredentialService {
     }
 
     public String encryptPassword( Credential credential){
-        return encryptionService.encryptValue(credential.getPassword(), credential.getKey());
+        return encryptionService.encryptValue(credential.getRawPassword(), credential.getKey());
     };
 
     public String decryptPassword(Credential credential){

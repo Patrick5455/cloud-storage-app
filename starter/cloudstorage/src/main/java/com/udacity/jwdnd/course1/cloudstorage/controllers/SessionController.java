@@ -81,10 +81,9 @@ public class SessionController {
 
 
     @GetMapping("/login-error")
-    public String loginError(@RequestParam("error") boolean error, HttpServletRequest request, Model model) {
-        if (error) {
+    public String loginError(HttpServletRequest request, Model model) {
             HttpSession httpSession = request.getSession(false);
-            String errorMessage = null;
+            String errorMessage = "incorrect login";
             if (httpSession != null) {
                 AuthenticationException e = (AuthenticationException) httpSession.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
                 if (e != null) {
@@ -92,9 +91,7 @@ public class SessionController {
                 }
             }
             model.addAttribute("errorMessage", errorMessage);
-            return "redirect:/login/error=true";
-        }
-        return "redirect:/login";
+            return "redirect:/login";
     }
 
 
