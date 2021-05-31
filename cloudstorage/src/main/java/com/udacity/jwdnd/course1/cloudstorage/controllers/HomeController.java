@@ -43,7 +43,7 @@ public class HomeController {
 
 
     @GetMapping
-    public String home(Model model) throws ResourceNotFoundException{
+    public String home(Model model) {
         int userId;
 
         try {
@@ -57,6 +57,7 @@ public class HomeController {
             model.addAttribute("files", new ArrayList<File>());
             model.addAttribute("notes", noteService.getAllNotesByUserId(userId));
             model.addAttribute("privates", credentialService.getAllUserCredentials(userId));
+            model.addAttribute("file", new File());
             model.addAttribute("note", new Note());
             model.addAttribute("private", new Credential());
             return "home";

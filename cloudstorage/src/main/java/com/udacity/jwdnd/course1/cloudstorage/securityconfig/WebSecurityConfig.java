@@ -1,24 +1,23 @@
 package com.udacity.jwdnd.course1.cloudstorage.securityconfig;
 
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthService authService;
+    private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     @Autowired
     public WebSecurityConfig(AuthService authService){
@@ -63,16 +62,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationFailureHandler authenticationFailureHandler(){
-        return new AuthenticationFailureHandler() {
-            @Override
-            public void onAuthenticationFailure(HttpServletRequest httpServletRequest,
-                                                HttpServletResponse httpServletResponse,
-                                                AuthenticationException e) throws IOException, ServletException {
+        return (httpServletRequest, httpServletResponse, e) -> {
 
-                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                System.out.println("handling error");
-                httpServletResponse.sendRedirect("/login?error=true");
-            }
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            logger.info("handling error");
+            httpServletResponse.sendRedirect("/login?error=true");
         };
     }
 }
