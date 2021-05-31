@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 @Service
-public class AuthServiceImpl implements AuthService, AuthenticationProvider {
+public class AuthServiceImpl implements AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 

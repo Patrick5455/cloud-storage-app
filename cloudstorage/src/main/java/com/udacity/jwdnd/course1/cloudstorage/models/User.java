@@ -13,9 +13,9 @@ import javax.validation.constraints.*;
 @Data
 public class User {
     private int userId;
-    @NotBlank(message = "username should not be empty")
+    @NotBlank(message = "username should not be blank")
     private String username;
-    @NotBlank(message = "firstname should not be empty")
+    @NotBlank(message = "firstname should not be blank")
     private String firstName;
     @NotBlank(message = "lastname should not be blank")
     private String lastName;
