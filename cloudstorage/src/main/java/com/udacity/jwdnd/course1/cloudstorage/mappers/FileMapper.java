@@ -23,5 +23,5 @@ public interface FileMapper {
     public List<File> getAllFiles(int userId);
 
     @Delete("DELETE FROM FILES WHERE filename=#{fileName} AND userid=#{userId}")
-    public void deleteFile(int fileName, int userId);
+    public void deleteFile(String fileName, int userId);
 }
