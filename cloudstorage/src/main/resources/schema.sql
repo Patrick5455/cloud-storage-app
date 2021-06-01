@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS FILES (
     filesize VARCHAR,
     userid INT,
     filedata BLOB,
+    datecreated timestamp,
     foreign key (userid) references USERS(userid)
 );
 
