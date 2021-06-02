@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/files")
@@ -27,7 +29,7 @@ public class FileController {
     private final AuthService authService;
     private final UserService userService;
 
-    public FileController(FileService fileService, AuthService authService, UserService userService){
+    public FileController(FileService fileService, AuthService authService, UserService userService) {
         this.fileService = fileService;
         this.authService = authService;
         this.userService = userService;
@@ -35,19 +37,18 @@ public class FileController {
     }
 
     @PostMapping
-    public String uploadFile(Model model, MultipartFile file) {
-       try {
-          fileService.uploadNewFile(file);
-           model.addAttribute("errorMessage", null);
-           return "result";
-       }
-       catch (Exception e){
-           e.printStackTrace();
-           logger.error("an error occurred while uploading file {}", e.getMessage());
-           if(e.getMessage().contains("please attach a file")) model.addAttribute("errorMessage", e.getMessage());
-          else model.addAttribute("errorMessage", "an error occurred while uploading file");
-           return "result";
-       }
-
+    public String uploadFile(Model model, @RequestParam("fileUpload") MultipartFile file) {
+        try {
+            fileService.uploadNewFile(file);
+            model.addAttribute("errorMessage", null);
+            return "result";
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("an error occurred while uploading file {}", e.getMessage());
+            if (e.getMessage().contains("please attach a file")) model.addAttribute("errorMessage", e.getMessage());
+            else model.addAttribute("errorMessage", "an error occurred while uploading file");
+            return "result";
+        }
     }
+
 }

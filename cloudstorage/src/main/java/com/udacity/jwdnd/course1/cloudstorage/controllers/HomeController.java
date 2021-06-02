@@ -4,6 +4,7 @@ import com.udacity.jwdnd.course1.cloudstorage.exceptions.ResourceNotFoundExcepti
 import com.udacity.jwdnd.course1.cloudstorage.models.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.models.File;
 import com.udacity.jwdnd.course1.cloudstorage.models.Note;
+import com.udacity.jwdnd.course1.cloudstorage.models.dto.FileResponse;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.NoteService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
@@ -48,20 +50,21 @@ public class HomeController {
         int userId;
 
         try {
-             userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
+            System.out.println("getting user files " +fileService.getAllUserFiles());
+            userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
         } catch (ResourceNotFoundException e){
             logger.error("error getting userid->  {}",e.getMessage());
             return "home";
         }
 
+
         try {
-            model.addAttribute("files", new ArrayList<File>());
+            model.addAttribute("files", fileService.getAllUserFiles());
             model.addAttribute("notes", noteService.getAllNotesByUserId(userId));
             model.addAttribute("privates", credentialService.getAllUserCredentials(userId));
             model.addAttribute("note", new Note());
             model.addAttribute("private", new Credential());
             return "home";
-
         }
         catch (ResourceNotFoundException e){
             model.addAttribute("errorMessage", "something unexpected happen please try logging in again");
@@ -69,6 +72,9 @@ public class HomeController {
         }
 
     }
+
+
+
 
 }
 
