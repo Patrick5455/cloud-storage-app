@@ -1,14 +1,17 @@
 package com.udacity.jwdnd.course1.cloudstorage.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.sql.Timestamp;
 
+@Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class File {
 
     private int fileId;
@@ -16,7 +19,8 @@ public class File {
     private String fileName;
     @NotBlank(message = "file content type must be specified")
     private String contentType;
-    private Integer fileSize;
+    private Long fileSize;
     private int userId;
     private byte[] fileData;
+    private Timestamp createdAt;
 }

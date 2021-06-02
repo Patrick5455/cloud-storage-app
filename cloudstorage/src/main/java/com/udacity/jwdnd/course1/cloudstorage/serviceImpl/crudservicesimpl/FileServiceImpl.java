@@ -10,7 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @Service
@@ -30,9 +33,23 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public int uploadNewFile(File file) throws Exception{
+    public int uploadNewFile(MultipartFile file) throws Exception{
         try {
-            return fileMapper.insertFile(file);
+            if (file == null){
+                throw new FileNotFoundException("please attach a file");
+            }
+            else {
+                int userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
+                String fileName = StringUtils.cleanPath(file.getName());
+                File fileToSave = File.builder()
+                        .fileName(fileName)
+                        .contentType(file.getContentType())
+                        .fileSize(file.getSize())
+                        .userId(userId)
+                        .fileData(file.getBytes())
+                        .build();
+                return fileMapper.insertFile(fileToSave);
+            }
         }
         catch (Exception e){
             logger.error("something went wrong while uploading {} file", file.getFileName());

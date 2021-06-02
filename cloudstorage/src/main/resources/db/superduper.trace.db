@@ -1749,3 +1749,12 @@ SELECT * FROM USERS WHERE USERNAME=TestUser5455 [42122-200]
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:834)
+2021-06-01 09:22:12 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SHOW COLUMNS IN[*] FILES"; expected "FROM"; SQL statement:
+SHOW COLUMNS IN FILES [42001-200]
+2021-06-01 09:23:08 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "USE SCHEMA SUPERDUPER[*]"; SQL statement:
+USE SCHEMA superduper [42000-200]
+2021-06-01 09:23:08 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SHOW COLUMNS IN[*] FILES"; expected "FROM"; SQL statement:
+SHOW COLUMNS IN FILES [42001-200]

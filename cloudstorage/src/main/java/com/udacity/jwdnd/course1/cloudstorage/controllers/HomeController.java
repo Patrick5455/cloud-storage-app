@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 
@@ -57,7 +58,6 @@ public class HomeController {
             model.addAttribute("files", new ArrayList<File>());
             model.addAttribute("notes", noteService.getAllNotesByUserId(userId));
             model.addAttribute("privates", credentialService.getAllUserCredentials(userId));
-            model.addAttribute("file", new File());
             model.addAttribute("note", new Note());
             model.addAttribute("private", new Credential());
             return "home";
