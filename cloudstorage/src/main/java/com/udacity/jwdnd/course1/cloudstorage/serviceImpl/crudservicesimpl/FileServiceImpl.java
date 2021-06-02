@@ -52,7 +52,7 @@ public class FileServiceImpl implements FileService {
             }
         }
         catch (Exception e){
-            logger.error("something went wrong while uploading {} file", file.getFileName());
+            logger.error("something went wrong while uploading  file {}", e.getMessage());
             throw new Exception("file could not be uploaded "+e.getMessage());
         }
     }
