@@ -13,11 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Base64;
+
 
 
 @Controller
@@ -63,7 +60,7 @@ public class CredentialController {
                int lastInsertedId =  credentialService.createCredential(credential);
                 logger.info("credential with id {} successfully created", lastInsertedId);
                 model.addAttribute("errorMessage", null);
-                return "result";
+                return "redirect:/";
             } catch (Exception e){
                 credential.setUserId(userId);
                 model.addAttribute("errorMessage", "something went wrong, credential could not be created");
@@ -76,7 +73,7 @@ public class CredentialController {
             credentialService.updateCredential(credential);
             logger.info("credential with id {} successfully updated", credential.getCredentialId());
             model.addAttribute("errorMessage", null);
-            return "result";
+            return "redirect:/";
         } catch (Exception e){
             model.addAttribute("errorMessage", "something went wrong, credential could not be updated");
             return "result";
@@ -91,7 +88,7 @@ public class CredentialController {
             logger.info("credential with id {} successfully deleted", credentialId);
             credentialService.deleteCredential(userId, credentialId);
             model.addAttribute("errorMessage",null);
-            return "result";
+            return "redirect:/";
         }  catch (ResourceNotFoundException e){
         logger.error("error while deleting credential {}", e.getMessage());
         model.addAttribute("errorMessage", "credential could not be deleted, please try again");

@@ -5,7 +5,6 @@ import com.udacity.jwdnd.course1.cloudstorage.models.Note;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class NoteController {
             return "result";
         }
         model.addAttribute("errorMessage",null);
-        return "result";
+        return "redirect:/";
     }
 
     @RequestMapping(method = {RequestMethod.GET, RequestMethod.DELETE})
@@ -69,7 +68,7 @@ public class NoteController {
             return "result";
         }
         model.addAttribute("errorMessage",null);
-        return "result";
+        return "redirect:/";
     }
 
     
