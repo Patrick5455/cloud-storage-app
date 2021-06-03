@@ -21,4 +21,6 @@ public interface FileService {
     public List<FileResponse> getAllUserFiles() throws ResourceNotFoundException;
 
     public void deleteFIle(String fileName) throws Exception;
+
+    public File getFileById(int id) throws Exception;
 }

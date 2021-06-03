@@ -1,23 +1,16 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
-import com.udacity.jwdnd.course1.cloudstorage.exceptions.ResourceNotFoundException;
-import com.udacity.jwdnd.course1.cloudstorage.models.File;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
-import org.apache.catalina.manager.util.SessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/files")
@@ -43,12 +36,17 @@ public class FileController {
             model.addAttribute("errorMessage", null);
             return "result";
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("an error occurred while uploading file {}", e.getMessage());
             if (e.getMessage().contains("user-error")) model.addAttribute("errorMessage", e.getMessage());
             else model.addAttribute("errorMessage", "an error occurred while uploading file");
             return "result";
         }
+    }
+
+    public String viewFile(int fileId){
+
+
+        return "home";
     }
 
 }
