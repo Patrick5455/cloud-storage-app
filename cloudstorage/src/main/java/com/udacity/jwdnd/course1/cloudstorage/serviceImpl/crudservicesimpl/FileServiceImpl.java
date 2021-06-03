@@ -33,14 +33,14 @@ public class FileServiceImpl implements FileService {
     private final UserService userService;
 
     @Autowired
-    public FileServiceImpl(FileMapper fileMapper, AuthService authService, UserService userService){
+    public FileServiceImpl(FileMapper fileMapper, AuthService authService, UserService userService) {
         this.fileMapper = fileMapper;
         this.authService = authService;
         this.userService = userService;
     }
 
     @Override
-    public int uploadNewFile(MultipartFile file) throws Exception{
+    public int uploadNewFile(MultipartFile file) throws Exception {
         try {
 
             int userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
@@ -50,52 +50,50 @@ public class FileServiceImpl implements FileService {
                 throw new FileNotFoundException(" user-error:please attach a file");
             }
 
-            if(file.getOriginalFilename() == null || file.getOriginalFilename().equals("")) {
+            if (file.getOriginalFilename() == null || file.getOriginalFilename().equals("")) {
                 logger.error("cannot upload file | no file attachment found");
                 throw new FileNotFoundException("user-error: please attach a file");
             }
 
-            if(exceedsAllowedFIleSize(file)) {
+            if (exceedsAllowedFIleSize(file)) {
                 logger.error("file size limit exceeded");
                 throw new FileSizeLimitExceededException("file size limit exceeded", file.getSize(), MAX_FILE_SIZE);
             }
 
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-            if(isExistingFile(fileName)){
+            if (isExistingFile(fileName)) {
                 logger.error("cannot upload file | file already exists");
                 throw new IllegalArgumentException("user-error: that file already exists | name conflicts with an existing file");
             }
-                File fileToSave = File.builder()
-                        .fileName(fileName)
-                        .contentType(file.getContentType())
-                        .fileSize(file.getSize())
-                        .userId(userId)
-                        .fileData(file.getBytes())
-                        .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-                        .build();
-                return fileMapper.insertFile(fileToSave);
-        }
-        catch (Exception e){
+            File fileToSave = File.builder()
+                    .fileName(fileName)
+                    .contentType(file.getContentType())
+                    .fileSize(file.getSize())
+                    .userId(userId)
+                    .fileData(file.getBytes())
+                    .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                    .build();
+            return fileMapper.insertFile(fileToSave);
+        } catch (Exception e) {
             logger.error("something went wrong while uploading  file {}", e.getMessage());
-            throw new Exception("file could not be uploaded "+e.getMessage());
+            throw new Exception("file could not be uploaded " + e.getMessage());
         }
     }
 
 
-    private boolean exceedsAllowedFIleSize(MultipartFile file){
+    private boolean exceedsAllowedFIleSize(MultipartFile file) {
         return file.getSize() > MAX_FILE_SIZE;
     }
 
-    private boolean isExistingFile(String fileName) throws Exception{
+    private boolean isExistingFile(String fileName) throws Exception {
         int userid;
         try {
             userid = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
             File file = fileMapper.getFileByFileName(userid, fileName);
-            logger.info("is not existing file : {}", file != null );
+            logger.info("is not existing file : {}", file != null);
             return file != null;
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("could not fetch file {} ", e.getMessage());
             throw new Exception("an error occurred while fetching file from DB");
         }
@@ -103,21 +101,38 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public FileResponse getFileByFileName(String filename) throws ResourceNotFoundException{
+    public FileResponse getFileByFileName(String filename) throws ResourceNotFoundException {
         int userid;
         try {
-         userid  = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
-         File file =  fileMapper.getFileByFileName(userid, filename);
-         if(file == null){
-             logger.info("no file with name {} found", filename);
-             return null;
-         }
-         logger.info("{} file fetched from DB", file.getFileName());
-         return new FileResponse(file);
+            userid = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
+            File file = fileMapper.getFileByFileName(userid, filename);
+            if (file == null) {
+                logger.info("no file with name {} found", filename);
+                return null;
+            }
+            logger.info("{} file fetched from DB", file.getFileName());
+            return new FileResponse(file);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("could not fetch file {} ", e.getMessage());
-            throw new ResourceNotFoundException("could not fetch file "+e.getMessage());
+            throw new ResourceNotFoundException("could not fetch file " + e.getMessage());
+        }
+    }
+
+    @Override
+    public FileResponse getFileById(int id) throws Exception {
+        try {
+            File file = fileMapper.getFileById(id);
+            if (file == null) {
+                logger.error("file with id {} does not exist", id);
+                return null;
+            }
+            else {
+                logger.info("file fetched");
+                return new FileResponse(file);
+            }
+        } catch (Exception e) {
+            logger.error("could not fetch file {} ", e.getMessage());
+            throw new ResourceNotFoundException("could not fetch file " + e.getMessage());
         }
     }
 
@@ -145,14 +160,13 @@ public class FileServiceImpl implements FileService {
             return files;
         }
         catch (Exception e){
-            e.printStackTrace();
             logger.error("could not fetch files from DB {}", e.getMessage());
             throw new ResourceNotFoundException("could not fetch files from DB " +e.getMessage());
         }
     }
 
     @Override
-    public void deleteFIle(String fileName) throws Exception {
+    public void deleteFIleByName(String fileName) throws Exception {
         try{
             int userid  = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
            fileMapper.deleteFile(fileName, userid);
@@ -162,4 +176,10 @@ public class FileServiceImpl implements FileService {
             throw new Exception("something went wrong, file could not be deleted "+e.getMessage());
         }
     }
+
+    @Override
+    public void deleteFIleById(int id) throws Exception {
+
+    }
+
 }
