@@ -37,3 +37,6 @@ CREATE TABLE IF NOT EXISTS CREDENTIALS (
     userid INT,
     foreign key (userid) references USERS(userid)
 );
+
+
+// DELETE FROM FILES WHERE FILENAME = 'segmentation.py'

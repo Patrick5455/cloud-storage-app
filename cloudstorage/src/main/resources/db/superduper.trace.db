@@ -1879,3 +1879,24 @@ INSERT INTO FILES (filename, contenttype, filesize, userid, filedata)VALUES(?, ?
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:834)
+2021-06-03 15:32:26 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM FILES WHERE FILENAME LIKE %[*]'py'%"; SQL statement:
+DELETE FROM FILES WHERE FILENAME LIKE %'py'% [42000-200]
+2021-06-03 15:32:38 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM FILES WHERE FILENAME LIKE %p[*]'%;"; SQL statement:
+DELETE FROM FILES WHERE FILENAME LIKE %p'%; [42000-200]
+2021-06-03 15:32:48 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM FILES WHERE FILENAME LIKE %[*]PY%"; SQL statement:
+DELETE FROM FILES WHERE FILENAME LIKE %py% [42000-200]
+2021-06-03 15:33:02 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM FILES WHERE FILENAME LIKE %[*]%PY%%"; SQL statement:
+DELETE FROM FILES WHERE FILENAME LIKE %%py%% [42000-200]
+2021-06-03 15:33:14 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM FILES WHERE FILENAME LIKE ''py[*]"";"; SQL statement:
+DELETE FROM FILES WHERE FILENAME LIKE ''py"; [42000-200]
+2021-06-03 15:33:24 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM FILES WHERE FILENAME LIKE %''py[*]"";"; SQL statement:
+DELETE FROM FILES WHERE FILENAME LIKE %''py"; [42000-200]
+2021-06-03 15:33:56 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM FILES WHERE FILENAME = 'segmentation.py'[*]';"; SQL statement:
+DELETE FROM FILES WHERE FILENAME = 'segmentation.py''; [42000-200]

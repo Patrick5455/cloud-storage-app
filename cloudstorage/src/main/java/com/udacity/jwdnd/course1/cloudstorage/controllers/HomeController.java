@@ -50,7 +50,6 @@ public class HomeController {
         int userId;
 
         try {
-            System.out.println("getting user files " +fileService.getAllUserFiles());
             userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
         } catch (ResourceNotFoundException e){
             logger.error("error getting userid->  {}",e.getMessage());

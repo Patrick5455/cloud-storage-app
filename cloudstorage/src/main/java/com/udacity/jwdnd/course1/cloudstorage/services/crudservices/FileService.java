@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Service
 public interface FileService {
 
     public int uploadNewFile(MultipartFile file) throws Exception;
