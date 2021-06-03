@@ -3,7 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.serviceImpl.crudservicesimpl;
 import com.udacity.jwdnd.course1.cloudstorage.exceptions.ResourceNotFoundException;
 import com.udacity.jwdnd.course1.cloudstorage.mappers.FileMapper;
 import com.udacity.jwdnd.course1.cloudstorage.models.File;
-import com.udacity.jwdnd.course1.cloudstorage.models.dto.FileResponse;
+import com.udacity.jwdnd.course1.cloudstorage.models.dto.response.FileResponse;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
@@ -11,6 +11,7 @@ import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededExceptio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -169,7 +170,7 @@ public class FileServiceImpl implements FileService {
     public void deleteFIleByName(String fileName) throws Exception {
         try{
             int userid  = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
-           fileMapper.deleteFile(fileName, userid);
+           fileMapper.deleteFileByName(fileName, userid);
             logger.info("{} files has been deleted", fileName);
         }
         catch (Exception e){
@@ -179,7 +180,29 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void deleteFIleById(int id) throws Exception {
-
+        try{
+            int userid  = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
+            fileMapper.deleteFileById(id);
+            logger.info("file with id {} has been deleted", id);
+        }
+        catch (Exception e){
+            throw new Exception("something went wrong, file could not be deleted "+e.getMessage());
+        }
     }
+
+    @Override
+    public File getDownloadableFile(int id) throws Exception{
+        try{
+            File fileData = fileMapper.getFileById(id);
+            logger.info("downloadable data of file with id {} fetched", id);
+            return fileData;
+        }
+        catch (Exception e){
+            logger.error("file not found | file to download not found");
+            throw new ResourceNotFoundException("file not found");
+        }
+    }
+
+
 
 }

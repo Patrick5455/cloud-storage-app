@@ -1,4 +1,4 @@
-package com.udacity.jwdnd.course1.cloudstorage.models.dto;
+package com.udacity.jwdnd.course1.cloudstorage.models.dto.response;
 
 import com.udacity.jwdnd.course1.cloudstorage.models.File;
 import lombok.AllArgsConstructor;
@@ -23,4 +23,5 @@ public class FileResponse {
         size = Optional.of(String.format("%.2f KB", Math.ceil(file.getFileSize()/1024.0))).orElse("0 MB");
         createdAt = file.getCreatedAt() == null ? "not found" : file.getCreatedAt().toString();
     }
+
 }

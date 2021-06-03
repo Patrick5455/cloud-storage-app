@@ -1,8 +1,8 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
 import com.udacity.jwdnd.course1.cloudstorage.exceptions.SignUpException;
-import com.udacity.jwdnd.course1.cloudstorage.models.requests.LoginRequest;
-import com.udacity.jwdnd.course1.cloudstorage.models.requests.SignupRequest;
+import com.udacity.jwdnd.course1.cloudstorage.models.dto.requests.LoginRequest;
+import com.udacity.jwdnd.course1.cloudstorage.models.dto.requests.SignupRequest;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
 import org.slf4j.Logger;
