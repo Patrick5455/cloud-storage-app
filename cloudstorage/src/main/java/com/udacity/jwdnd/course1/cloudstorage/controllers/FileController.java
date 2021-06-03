@@ -80,9 +80,9 @@ public class FileController {
     }
 
     @GetMapping("/download")
-    public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam int id, Model model) {
+    public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam int fileId, Model model) {
         try {
-            File file = fileService.getDownloadableFile(id);
+            File file = fileService.getDownloadableFile(fileId);
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(file.getContentType()))
                     .contentLength(file.getFileSize())
