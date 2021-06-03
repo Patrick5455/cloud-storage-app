@@ -4,6 +4,7 @@ import com.udacity.jwdnd.course1.cloudstorage.models.dto.FileResponse;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
+import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -51,6 +52,20 @@ public class FileController {
         } catch (Exception e){
             logger.error("an error occurred while getting file {}", e.getMessage());
             model.addAttribute("errorMessage", "an error occurred while getting file");
+            return "home";
+        }
+    }
+
+
+    @Delete("/{fileId}")
+    public String deleteFile(Model model, @PathVariable int fileId){
+        try {
+            fileService.deleteFIleById(fileId);
+            model.addAttribute("message", null);
+            return "home";
+        } catch (Exception e){
+            logger.error("an error occurred while deleting file {}", e.getMessage());
+            model.addAttribute("errorMessage", "an error occurred while deleting file");
             return "home";
         }
     }

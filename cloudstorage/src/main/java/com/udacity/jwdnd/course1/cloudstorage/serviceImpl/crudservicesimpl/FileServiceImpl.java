@@ -166,7 +166,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void deleteFIle(String fileName) throws Exception {
+    public void deleteFIleByName(String fileName) throws Exception {
         try{
             int userid  = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
            fileMapper.deleteFile(fileName, userid);
@@ -175,6 +175,11 @@ public class FileServiceImpl implements FileService {
         catch (Exception e){
             throw new Exception("something went wrong, file could not be deleted "+e.getMessage());
         }
+    }
+
+    @Override
+    public void deleteFIleById(int id) throws Exception {
+
     }
 
 }
