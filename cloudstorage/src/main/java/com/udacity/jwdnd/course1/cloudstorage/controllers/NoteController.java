@@ -61,8 +61,8 @@ public class NoteController {
     public String deleteNote(@RequestParam("noteId") long noteId, Model model){
         try {
             int userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
-            logger.info("note with id {} successfully deleted", noteId);
             noteService.deleteANote(userId, noteId);
+            logger.info("note with id {} successfully deleted", noteId);
         } catch (ResourceNotFoundException e){
             logger.error("error while deleting note {}", e.getMessage());
             model.addAttribute("errorMessage", "note could not be deleted, please try again");

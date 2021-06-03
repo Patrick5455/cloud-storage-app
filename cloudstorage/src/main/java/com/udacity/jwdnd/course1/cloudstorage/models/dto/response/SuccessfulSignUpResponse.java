@@ -1,4 +1,4 @@
-package com.udacity.jwdnd.course1.cloudstorage.models.response;
+package com.udacity.jwdnd.course1.cloudstorage.models.dto.response;
 
 import lombok.Data;
 
