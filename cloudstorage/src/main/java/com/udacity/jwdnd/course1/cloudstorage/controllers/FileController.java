@@ -45,7 +45,7 @@ public class FileController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("an error occurred while uploading file {}", e.getMessage());
-            if (e.getMessage().contains("please attach a file")) model.addAttribute("errorMessage", e.getMessage());
+            if (e.getMessage().contains("user-error")) model.addAttribute("errorMessage", e.getMessage());
             else model.addAttribute("errorMessage", "an error occurred while uploading file");
             return "result";
         }

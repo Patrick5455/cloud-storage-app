@@ -7,6 +7,7 @@ import com.udacity.jwdnd.course1.cloudstorage.models.dto.FileResponse;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 @Service
 public class FileServiceImpl implements FileService {
 
     private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
+    private static final int MAX_FILE_SIZE = 1048576;
 
     private final FileMapper fileMapper;
     private final AuthService authService;
@@ -41,16 +42,30 @@ public class FileServiceImpl implements FileService {
     @Override
     public int uploadNewFile(MultipartFile file) throws Exception{
         try {
-            if (file == null){
-                throw new FileNotFoundException("please attach a file");
-            }
-            else {
-                int userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
 
-                if(file.getOriginalFilename() == null || file.getOriginalFilename().equals("")){
-                    throw new FileNotFoundException("please attach a file");
-                }
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            int userId = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
+
+            if (file == null) {
+                logger.error("cannot upload file | no file attachment found");
+                throw new FileNotFoundException(" user-error:please attach a file");
+            }
+
+            if(file.getOriginalFilename() == null || file.getOriginalFilename().equals("")) {
+                logger.error("cannot upload file | no file attachment found");
+                throw new FileNotFoundException("user-error: please attach a file");
+            }
+
+            if(exceedsAllowedFIleSize(file)) {
+                logger.error("file size limit exceeded");
+                throw new FileSizeLimitExceededException("file size limit exceeded", file.getSize(), MAX_FILE_SIZE);
+            }
+
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+            if(isExistingFile(fileName)){
+                logger.error("cannot upload file | file already exists");
+                throw new IllegalArgumentException("user-error: that file already exists | name conflicts with an existing file");
+            }
                 File fileToSave = File.builder()
                         .fileName(fileName)
                         .contentType(file.getContentType())
@@ -60,12 +75,31 @@ public class FileServiceImpl implements FileService {
                         .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                         .build();
                 return fileMapper.insertFile(fileToSave);
-            }
         }
         catch (Exception e){
             logger.error("something went wrong while uploading  file {}", e.getMessage());
             throw new Exception("file could not be uploaded "+e.getMessage());
         }
+    }
+
+
+    private boolean exceedsAllowedFIleSize(MultipartFile file){
+        return file.getSize() > MAX_FILE_SIZE;
+    }
+
+    private boolean isExistingFile(String fileName) throws Exception{
+        int userid;
+        try {
+            userid = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
+            File file = fileMapper.getFileByFileName(userid, fileName);
+            logger.info("is not existing file : {}", file != null );
+            return file != null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("could not fetch file {} ", e.getMessage());
+            throw new Exception("an error occurred while fetching file from DB");
+        }
+
     }
 
     @Override
@@ -74,8 +108,12 @@ public class FileServiceImpl implements FileService {
         try {
          userid  = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
          File file =  fileMapper.getFileByFileName(userid, filename);
-            logger.info("{} file fetched from DB", file.getFileName());
-            return new FileResponse(file);
+         if(file == null){
+             logger.info("no file with name {} found", filename);
+             return null;
+         }
+         logger.info("{} file fetched from DB", file.getFileName());
+         return new FileResponse(file);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("could not fetch file {} ", e.getMessage());
@@ -97,13 +135,13 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<FileResponse> getAllUserFiles() throws ResourceNotFoundException {
-        List<FileResponse> files = new ArrayList<>();
+        List<FileResponse> files;
         try{
            int userid  = userService.getUserByUserName(authService.getLoggedInUser().getName()).getUserId();
             files = fileMapper.getAllFiles(userid).
                     stream().map(FileResponse::new).collect(Collectors.toList());
             logger.info("{} files fetched from DB for user with id {}", files.size(), userid);
-            System.out.println("fies from DB "+files);
+
             return files;
         }
         catch (Exception e){
