@@ -22,5 +22,5 @@ public interface FileService {
 
     public void deleteFIle(String fileName) throws Exception;
 
-    public File getFileById(int id) throws Exception;
+    public FileResponse getFileById(int id) throws Exception;
 }

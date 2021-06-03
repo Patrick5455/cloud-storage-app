@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
+import com.udacity.jwdnd.course1.cloudstorage.models.dto.FileResponse;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.crudservices.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.securityservices.AuthService;
@@ -7,9 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -43,10 +42,17 @@ public class FileController {
         }
     }
 
-    public String viewFile(int fileId){
-
-
-        return "home";
+    @GetMapping("/{fileId}")
+    public String viewFile(Model model, @PathVariable int fileId){
+        try {
+            FileResponse fileResponse = fileService.getFileById(fileId);
+            model.addAttribute("message", fileResponse);
+            return "home";
+        } catch (Exception e){
+            logger.error("an error occurred while getting file {}", e.getMessage());
+            model.addAttribute("errorMessage", "an error occurred while getting file");
+            return "home";
+        }
     }
 
 }

@@ -119,7 +119,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File getFileById(int id) throws Exception {
+    public FileResponse getFileById(int id) throws Exception {
         try {
             File file = fileMapper.getFileById(id);
             if (file == null) {
@@ -128,7 +128,7 @@ public class FileServiceImpl implements FileService {
             }
             else {
                 logger.info("file fetched");
-                return file;
+                return new FileResponse(file);
             }
         } catch (Exception e) {
             logger.error("could not fetch file {} ", e.getMessage());
